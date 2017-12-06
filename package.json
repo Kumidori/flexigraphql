@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev:server": "nodemon bin/www",
-    "json:server": "json-server --watch data.json"
+    "start": "nodemon bin/www"
   },
   "dependencies": {
     "axios": "^0.17.1",
