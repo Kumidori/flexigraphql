@@ -7,10 +7,6 @@ var bodyParser = require('body-parser');
 var sassMiddleware = require('node-sass-middleware');
 var expressGraphQL = require('express-graphql');
 var schema = require('./schema');
-
-var index = require('./routes/index');
-var users = require('./routes/users');
-
 var app = express();
 
 // view engine setup
