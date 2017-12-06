@@ -1,0 +1,23 @@
+{
+  "name": "grqphqltest",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev:server": "nodemon bin/www",
+    "json:server": "json-server --watch data.json"
+  },
+  "dependencies": {
+    "axios": "^0.17.1",
+    "body-parser": "~1.18.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.15.5",
+    "express-graphql": "^0.6.11",
+    "jade": "~1.11.0",
+    "json-server": "^0.12.1",
+    "morgan": "~1.9.0",
+    "node-sass-middleware": "0.9.8",
+    "nodemon": "^1.12.1",
+    "serve-favicon": "~2.4.5"
+  }
+}
