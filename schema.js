@@ -166,8 +166,8 @@ const rootQuery = new GraphQLObjectType({
                 const forum = `https://felix.hs-furtwangen.de/restapi/repo/courses/${args.courseKey}/elements/forum`;
                 return axios.get(forum, config)
                     .then(res => {
-                        console.log(res.data.folders);
-                        return res.data.folders[0];
+                        console.log(res.data);
+                        return res.data;
                     });
             }
         },
