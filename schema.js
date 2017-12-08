@@ -41,13 +41,22 @@ const FileType = new GraphQLObjectType({
         size: {type: GraphQLString}
     })
 });
-const ForumType = new GraphQLObjectType({
-    name: "Forum",
+const PostsType = new GraphQLObjectType({
+    name: "Posts",
     fields: () => ({
         key: {type: GraphQLString},
         title: {type: GraphQLString},
         body: {type: GraphQLString},
         author: {type: GraphQLString}
+    })
+});
+const ForumType = new GraphQLObjectType({
+    name: "Forum",
+    fields: () => ({
+        detailsName: {type: GraphQLString},
+        courseKey: {type: GraphQLString},
+        courseNodeId: {type: GraphQLString},
+        subscribed: {type: GraphQLString}
     })
 });
 
@@ -133,21 +142,35 @@ const rootQuery = new GraphQLObjectType({
                     });
             }
         },
-        Forum: {
-            type: new GraphQLList(ForumType),
+        Posts: {
+            type: new GraphQLList(PostsType),
             args:{
                 courseKey: {type: GraphQLString},
                 courseNodeId: {type: GraphQLString}
             },
             resolve(parentValue, args){
-                const files = args.href || `https://felix.hs-furtwangen.de/restapi/repo/courses/${args.courseKey}/elements/forum/${args.courseNodeId}/forum/threads`;
-                return axios.get(files, config)
+                const posts = `https://felix.hs-furtwangen.de/restapi/repo/courses/${args.courseKey}/elements/forum/${args.courseNodeId}/forum/threads`;
+                return axios.get(posts, config)
                     .then(res => {
                         console.log(res);
                         return res.data;
                     });
             }
-        }
+        },
+        Forum: {
+            type: ForumType,
+            args:{
+                courseKey: {type: GraphQLString}
+            },
+            resolve(parentValue, args){
+                const forum = `https://felix.hs-furtwangen.de/restapi/repo/courses/${args.courseKey}/elements/forum`;
+                return axios.get(forum, config)
+                    .then(res => {
+                        console.log(res.data.folders);
+                        return res.data.folders[0];
+                    });
+            }
+        },
     }
 });
 
