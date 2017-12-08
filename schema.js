@@ -140,7 +140,7 @@ const rootQuery = new GraphQLObjectType({
                 courseNodeId: {type: GraphQLString}
             },
             resolve(parentValue, args){
-                const files = args.href || `https://felix.hs-furtwangen.de/restapi/repo/courses/${courseKey}/elements/forum/${courseNodeId}/forum/threads`;
+                const files = args.href || `https://felix.hs-furtwangen.de/restapi/repo/courses/${args.courseKey}/elements/forum/${args.courseNodeId}/forum/threads`;
                 return axios.get(files, config)
                     .then(res => {
                         console.log(res);
