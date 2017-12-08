@@ -41,6 +41,15 @@ const FileType = new GraphQLObjectType({
         size: {type: GraphQLString}
     })
 });
+const ForumType = new GraphQLObjectType({
+    name: "Forum",
+    fields: () => ({
+        key: {type: GraphQLString},
+        title: {type: GraphQLString},
+        body: {type: GraphQLString},
+        author: {type: GraphQLString}
+    })
+});
 
 const rootQuery = new GraphQLObjectType({
     name: "RootQueryType",
@@ -117,6 +126,21 @@ const rootQuery = new GraphQLObjectType({
             },
             resolve(parentValue, args){
                 const files = args.href || `https://felix.hs-furtwangen.de/restapi/repo/courses/${args.courseKey}/elements/folder/${args.courseNodeId}/files`;
+                return axios.get(files, config)
+                    .then(res => {
+                        console.log(res);
+                        return res.data;
+                    });
+            }
+        },
+        Forum: {
+            type: new GraphQLList(ForumType),
+            args:{
+                courseKey: {type: GraphQLString},
+                courseNodeId: {type: GraphQLString}
+            },
+            resolve(parentValue, args){
+                const files = args.href || `https://felix.hs-furtwangen.de/restapi/repo/courses/${courseKey}/elements/forum/${courseNodeId}/forum/threads`;
                 return axios.get(files, config)
                     .then(res => {
                         console.log(res);
