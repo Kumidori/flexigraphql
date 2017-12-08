@@ -167,7 +167,7 @@ const rootQuery = new GraphQLObjectType({
                 return axios.get(forum, config)
                     .then(res => {
                         console.log(res.data);
-                        return res.data;
+                        return res.data.forums[0];
                     });
             }
         },
