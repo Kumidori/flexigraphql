@@ -59,6 +59,14 @@ const ForumType = new GraphQLObjectType({
         subscribed: {type: GraphQLString}
     })
 });
+const NewsType = new GraphQLObjectType({
+    name: "News",
+    fields: () => ({
+        title: {type: GraphQLString},
+        link: {type: GraphQLString},
+        description: {type: GraphQLString}
+    })
+});
 
 const rootQuery = new GraphQLObjectType({
     name: "RootQueryType",
@@ -168,6 +176,20 @@ const rootQuery = new GraphQLObjectType({
                     .then(res => {
                         console.log(res.data);
                         return res.data.forums[0];
+                    });
+            }
+        },
+        News: {
+            type: new GraphQLList(NewsType),
+            args:{
+
+            },
+            resolve(parentValue, args){
+                const news = `https://felix.hs-furtwangen.de/rss/personal/beckerth.hfu/XLZrRj/olat.rss`;
+                return axios.get(news, config)
+                    .then(res => {
+                        console.log(res.data);
+                        return res.data;
                     });
             }
         },
