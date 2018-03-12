@@ -15,6 +15,12 @@ const config = {
         password: "geheim01"
     }
 };
+const intraConfig = {
+    auth: {
+        username: "weingaen",
+        password: "978c447b32798766c3f1d79b3c75cd1c"
+    }
+};
 const KursType = new GraphQLObjectType({
         name: "Kurs",
         fields: () => ({
@@ -24,6 +30,14 @@ const KursType = new GraphQLObjectType({
         olatResourceId: {type: GraphQLString},
         displayname: {type: GraphQLString}, //für repo/entries
         key: {type: GraphQLString}
+    })
+});
+const Veranstaltungen = new GraphQLObjectType({
+    name: "Veranstaltungen",
+    fields: () => ({
+        name: {type: GraphQLString},
+        short: {type: GraphQLString},
+        id: {type: GraphQLString},
     })
 });
 const FolderType = new GraphQLObjectType({
@@ -95,6 +109,21 @@ const rootQuery = new GraphQLObjectType({
                     .then(res => res.data);
             }
         },
+
+        Veranstaltungen: {
+            type: new GraphQLList(Veranstaltungen),
+                args:{
+
+            },
+            resolve(parentValue, args){
+                const intraCourses = `https://webservdm.hs-furtwangen.de/subsites/Frapi/public/veranstaltungen/liste`;
+                return axios.get(intraCourses, intraConfig)
+                    .then(res => {
+                        console.log(res.data.veranstaltungen);
+                        return res.data.veranstaltungen;
+                    });
+            }
+},
         Kurse: {
             type: new GraphQLList(KursType),
             args:{
