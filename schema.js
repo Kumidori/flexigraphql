@@ -189,23 +189,18 @@ const rootQuery = new GraphQLObjectType({
                 const news = `https://felix.hs-furtwangen.de/rss/personal/beckerth.hfu/XLZrRj/olat.rss`;
                 return axios.get(news, config)
                     .then(res => {
-                        let news = {};
                         let final = [];
-
                        parseString(res.data, function (err, result) {
                             result.rss.channel[0].item.forEach((item,idx)=>{
-
-                                news.title = item.title[0];
-                                news.description = item.description[0];
-                                news.link = item.link[0];
-                                final[idx] = news;
-
+                                let news = {};
+                                for (let prop in item) {
+                                    news[prop] = item[prop][0];
+                                }
+                                final.push(news);
                             });
 
                         });
-                        console.log(final);
                         return final;
-
                     });
             }
         },
