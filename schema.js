@@ -190,16 +190,51 @@ const rootQuery = new GraphQLObjectType({
                 return axios.get(news, config)
                     .then(res => {
                         let final = [];
+                        // var eintraege = [];
                        parseString(res.data, function (err, result) {
                             result.rss.channel[0].item.forEach((item,idx)=>{
                                 let news = {};
+                                var eintraege = [];
                                 for (let prop in item) {
                                     news[prop] = item[prop][0];
                                 }
-                                final.push(news);
+                                var title = news['title'];
+                                var description = news['description'];
+                                if(description != "Mit diesem Link gelangen Sie zu FELIX."){
+                                    // console.log(description);
+                                    var short_description = description.split("<ul class='list-unstyled'><li>");
+                                    short_description = short_description[1].split("</ul>");
+                                    short_description = short_description[0].split("</li><li>");
+                                    short_description.forEach(function(element) {
+                                        var date_time=element.split("<span class='o_nowrap o_date'>am ");
+                                        var date_time=date_time[1].split("</span>");
+                                        var date_time=date_time[0];
+                                        var date= date_time.slice(0, 10);
+                                        var time= date_time.slice(11, 17);
+                                        
+                                        var link=element.split('href="');
+                                        link=link[1].split('"');
+                                        
+                                        
+                                        var message=element.split(">");
+                                        var message=message[3].split("</a");
+                                        
+                                        var autor=message[1];
+                                        var message=message[0];
+                                        
+                                        // console.log("hallo");
+                                        eintraege.push([+date[3]+date[4]+" "+date[0]+date[1]+", "+ date[6]+date[7]+date[8]+date[9]+" "
+                                        +time[0]+time[1]+":"
+                                        +time[3]+time[4]+":00"
+                                        ,message,date,time,title]);
+                                        console.log(eintraege);
+                                    });
+                                }
+                                
                             });
-
+                            
                         });
+                        final.push(eintraege);
                         return final;
                     });
             }
