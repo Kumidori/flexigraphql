@@ -1,4 +1,5 @@
 const axios = require("axios");
+let parseString = require('xml2js').parseString;
 const {
     GraphQLObjectType,
     GraphQLString,
@@ -160,7 +161,7 @@ const rootQuery = new GraphQLObjectType({
                 const posts = `https://felix.hs-furtwangen.de/restapi/repo/courses/${args.courseKey}/elements/forum/${args.courseNodeId}/forum/threads`;
                 return axios.get(posts, config)
                     .then(res => {
-                        console.log(res);
+                        console.log(res.data);
                         return res.data;
                     });
             }
@@ -188,13 +189,29 @@ const rootQuery = new GraphQLObjectType({
                 const news = `https://felix.hs-furtwangen.de/rss/personal/beckerth.hfu/XLZrRj/olat.rss`;
                 return axios.get(news, config)
                     .then(res => {
-                        console.log(res.data);
-                        return res.data;
+                        let news = {};
+                        let final = [];
+
+                       parseString(res.data, function (err, result) {
+                            result.rss.channel[0].item.forEach((item,idx)=>{
+
+                                news.title = item.title[0];
+                                news.description = item.description[0];
+                                news.link = item.link[0];
+                                final[idx] = news;
+
+                            });
+
+                        });
+                        console.log(final);
+                        return final;
+
                     });
             }
         },
     }
 });
+
 
 module.exports = new GraphQLSchema({
     query: rootQuery
