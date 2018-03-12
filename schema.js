@@ -65,6 +65,15 @@ const PostsType = new GraphQLObjectType({
         author: {type: GraphQLString}
     })
 });
+const PostingsType = new GraphQLObjectType({
+    name: "Postings",
+    fields: () => ({
+        key: {type: GraphQLString},
+        title: {type: GraphQLString},
+        body: {type: GraphQLString},
+        author: {type: GraphQLString}
+    })
+});
 const ForumType = new GraphQLObjectType({
     name: "Forum",
     fields: () => ({
@@ -81,7 +90,8 @@ const NewsType = new GraphQLObjectType({
         sortDate: {type: GraphQLString},
         message: {type: GraphQLString},
         date: {type: GraphQLString},
-        time: {type: GraphQLString}
+        time: {type: GraphQLString},
+        link: {type: GraphQLString}
     })
 });
 
@@ -197,6 +207,22 @@ const rootQuery = new GraphQLObjectType({
                     });
             }
         },
+        Postings: {
+            type: new GraphQLList(PostingsType),
+            args:{
+                courseKey: {type: GraphQLString},
+                courseNodeId: {type: GraphQLString},
+                key: {type: GraphQLString}
+            },
+            resolve(parentValue, args){
+                const postings = `https://felix.hs-furtwangen.de/restapi/repo/courses/${args.courseKey}/elements/forum/${args.courseNodeId}/forum/posts/${args.key}`;
+                return axios.get(postings, config)
+                    .then(res => {
+                        console.log(res);
+                        return res.data;
+                    });
+            }
+        },
         Forum: {
             type: ForumType,
             args:{
@@ -262,6 +288,7 @@ const rootQuery = new GraphQLObjectType({
                                         finalNews.date = date;
                                         finalNews.time = time;
                                         finalNews.title = title;
+                                        finalNews.link = link[0];
                                         final.push(finalNews);
                                     });
                                 }
@@ -269,6 +296,12 @@ const rootQuery = new GraphQLObjectType({
                             });
                             
                         });
+                        final.sort(function(a, b) {
+                            var dateA = new Date(a.sortDate), dateB = new Date(b.sortDate);
+                            console.log(dateA);
+                            return dateB - dateA;
+                        });
+
 
                         console.log(final);
                         return final;
