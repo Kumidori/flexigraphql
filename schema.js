@@ -240,6 +240,12 @@ const rootQuery = new GraphQLObjectType({
                             });
                             
                         });
+                        final.sort(function(a, b) {
+                            var dateA = new Date(a.sortDate), dateB = new Date(b.sortDate);
+                            console.log(dateA);
+                            return dateB - dateA;
+                        });
+
 
                         console.log(final);
                         return final;
