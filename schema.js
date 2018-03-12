@@ -51,6 +51,15 @@ const PostsType = new GraphQLObjectType({
         author: {type: GraphQLString}
     })
 });
+const PostingsType = new GraphQLObjectType({
+    name: "Postings",
+    fields: () => ({
+        key: {type: GraphQLString},
+        title: {type: GraphQLString},
+        body: {type: GraphQLString},
+        author: {type: GraphQLString}
+    })
+});
 const ForumType = new GraphQLObjectType({
     name: "Forum",
     fields: () => ({
@@ -165,6 +174,22 @@ const rootQuery = new GraphQLObjectType({
                 return axios.get(posts, config)
                     .then(res => {
                         console.log(res.data);
+                        return res.data;
+                    });
+            }
+        },
+        Postings: {
+            type: new GraphQLList(PostingsType),
+            args:{
+                courseKey: {type: GraphQLString},
+                courseNodeId: {type: GraphQLString},
+                key: {type: GraphQLString}
+            },
+            resolve(parentValue, args){
+                const postings = `https://felix.hs-furtwangen.de/restapi/repo/courses/${args.courseKey}/elements/forum/${args.courseNodeId}/forum/posts/${args.key}`;
+                return axios.get(postings, config)
+                    .then(res => {
+                        console.log(res);
                         return res.data;
                     });
             }
