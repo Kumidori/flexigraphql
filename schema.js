@@ -67,7 +67,8 @@ const NewsType = new GraphQLObjectType({
         sortDate: {type: GraphQLString},
         message: {type: GraphQLString},
         date: {type: GraphQLString},
-        time: {type: GraphQLString}
+        time: {type: GraphQLString},
+        link: {type: GraphQLString}
     })
 });
 
@@ -233,6 +234,7 @@ const rootQuery = new GraphQLObjectType({
                                         finalNews.date = date;
                                         finalNews.time = time;
                                         finalNews.title = title;
+                                        finalNews.link = link[0];
                                         final.push(finalNews);
                                     });
                                 }
