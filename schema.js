@@ -64,8 +64,10 @@ const NewsType = new GraphQLObjectType({
     name: "News",
     fields: () => ({
         title: {type: GraphQLString},
-        link: {type: GraphQLString},
-        description: {type: GraphQLString}
+        sortDate: {type: GraphQLString},
+        message: {type: GraphQLString},
+        date: {type: GraphQLString},
+        time: {type: GraphQLString}
     })
 });
 
@@ -194,7 +196,7 @@ const rootQuery = new GraphQLObjectType({
                        parseString(res.data, function (err, result) {
                             result.rss.channel[0].item.forEach((item,idx)=>{
                                 let news = {};
-                                var eintraege = [];
+
                                 for (let prop in item) {
                                     news[prop] = item[prop][0];
                                 }
@@ -206,6 +208,7 @@ const rootQuery = new GraphQLObjectType({
                                     short_description = short_description[1].split("</ul>");
                                     short_description = short_description[0].split("</li><li>");
                                     short_description.forEach(function(element) {
+                                        let finalNews = {};
                                         var date_time=element.split("<span class='o_nowrap o_date'>am ");
                                         var date_time=date_time[1].split("</span>");
                                         var date_time=date_time[0];
@@ -222,19 +225,23 @@ const rootQuery = new GraphQLObjectType({
                                         var autor=message[1];
                                         var message=message[0];
                                         
-                                        // console.log("hallo");
-                                        eintraege.push([+date[3]+date[4]+" "+date[0]+date[1]+", "+ date[6]+date[7]+date[8]+date[9]+" "
-                                        +time[0]+time[1]+":"
-                                        +time[3]+time[4]+":00"
-                                        ,message,date,time,title]);
-                                        console.log(eintraege);
+
+                                        finalNews.sortDate = date[3]+date[4]+" "+date[0]+date[1]+", "+ date[6]+date[7]+date[8]+date[9]+" "
+                                            +time[0]+time[1]+":"
+                                            +time[3]+time[4]+":00";
+                                        finalNews.message = message;
+                                        finalNews.date = date;
+                                        finalNews.time = time;
+                                        finalNews.title = title;
+                                        final.push(finalNews);
                                     });
                                 }
                                 
                             });
                             
                         });
-                        final.push(eintraege);
+
+                        console.log(final);
                         return final;
                     });
             }
