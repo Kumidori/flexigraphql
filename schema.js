@@ -11,7 +11,7 @@ const {
 
 const config = {
     auth: {
-        username: "taubew",  //taubew userId = 77725698 / beckerth userId = 2193293313
+        username: "taubew.hfu",  //taubew userId = 77725698 / beckerth userId = 2193293313
         password: "geheim01"
     }
 };
