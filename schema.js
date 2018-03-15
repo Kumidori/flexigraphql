@@ -11,8 +11,8 @@ const {
 
 const config = {
     auth: {
-        username: "taubew.hfu",  //taubew userId = 77725698 / beckerth userId = 2193293313
-        password: "geheim01"
+        username: "weingaen",  //taubew userId = 77725698 / beckerth userId = 2193293313
+        password: "Hochschulsohn!4"
     }
 };
 const intraConfig = {
@@ -92,6 +92,16 @@ const NewsType = new GraphQLObjectType({
         date: {type: GraphQLString},
         time: {type: GraphQLString},
         link: {type: GraphQLString}
+    })
+});
+const IntranetFiles = new GraphQLObjectType({
+    name: "IntranetFiles",
+    fields: () => ({
+        title: {type: GraphQLString},
+        link: {type: GraphQLString},
+        size: {type: GraphQLString},
+        uploadInfo: {type: GraphQLString},
+        description: {type: GraphQLString}
     })
 });
 
@@ -234,6 +244,34 @@ const rootQuery = new GraphQLObjectType({
                     .then(res => {
                         console.log(res.data);
                         return res.data.forums[0];
+                    });
+            }
+        },
+        IntranetFiles: {
+            type: new GraphQLList(IntranetFiles),
+            args:{
+                id: {type: GraphQLString},
+            },
+            resolve(parentValue, args){
+                const files =`https://www.dm.hs-furtwangen.de/dm.php?template=projects_foldercontent&projectid=${args.id}&folderid=&orderby=veroeffentlichungsdatum`;
+                return axios.get(files, intraConfig)
+                    .then(res => {
+                        let final = [];
+                        let xml = String(res.data).replace('<meta http-equiv="content-type" content="text/html; charset=utf-8" />', '');
+                        parseString(xml, function (err, result) {
+                            result.rss.channel[0].item.forEach((item,idx)=>{
+                                let obj = {};
+                                obj.title = item.title[0];
+                                obj.link = item.link[0];
+                                let description = item.description[0].split("<br >");
+                                console.log(description);
+                                obj.size = description[0];
+                                obj.uploadInfo = description[1];
+                                obj.description = description[2];
+                                final.push(obj);
+                            });
+                        });
+                        return final;
                     });
             }
         },
