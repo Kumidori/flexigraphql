@@ -11,8 +11,8 @@ const {
 
 const config = {
     auth: {
-        username: "weingaen",  //taubew userId = 77725698 / beckerth userId = 2193293313
-        password: "Hochschulsohn!4"
+        username: "taubew",  //taubew userId = 77725698 / beckerth userId = 2193293313
+        password: "geheim01"
     }
 };
 const intraConfig = {
