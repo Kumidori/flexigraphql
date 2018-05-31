@@ -40,6 +40,16 @@ const Veranstaltungen = new GraphQLObjectType({
         id: {type: GraphQLString},
     })
 });
+const Veranstaltungsdetails = new GraphQLObjectType({
+    name: "Veranstaltung",
+    fields: () => ({
+        name: {type: GraphQLString},
+        short: {type: GraphQLString},
+        vinfo: {type: GraphQLString},
+        id: {type: GraphQLString},
+        block: {type: GraphQLString}
+    })
+});
 const FolderType = new GraphQLObjectType({
     name: "Folder",
     fields: () => ({
@@ -143,7 +153,21 @@ const rootQuery = new GraphQLObjectType({
                         return res.data.veranstaltungen;
                     });
             }
-},
+        },
+        Veranstaltungsdetails: {
+            type: Veranstaltungsdetails,
+                args:{
+                    id: {type: GraphQLString}
+            },
+            resolve(parentValue, args){
+                const intraCourse = `https://webservdm.hs-furtwangen.de/subsites/Frapi/public/veranstaltungen/${args.id}`;
+                return axios.get(intraCourse, intraConfig)
+                    .then(res => {
+                        console.log(res.data.veranstaltung[0]);
+                        return res.data.veranstaltung[0];
+                    });
+            }
+        },
         Kurse: {
             type: new GraphQLList(KursType),
             args:{
